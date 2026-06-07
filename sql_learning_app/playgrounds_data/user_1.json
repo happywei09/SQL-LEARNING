@@ -1,0 +1,90 @@
+[
+  {
+    "id": "pg_1780826167010",
+    "name": "TEST",
+    "exercises": [
+      {
+        "chapter": 9,
+        "title": "Import từ CSV (Chương 9)",
+        "exercises": [
+          {
+            "id": 90001,
+            "title": "Kiểm tra danh sách sinh viên CNTT",
+            "desc": "Lấy danh sách tất cả sinh viên thuộc khoa CNTT (MAKHOA = 'CNTT').",
+            "difficulty": "Dễ",
+            "expectedQuery": "SELECT * FROM SINHVIEN S JOIN LOP L ON S.MALOP = L.MALOP WHERE L.MAKHOA = 'CNTT'",
+            "hint": "Join bảng SINHVIEN và LOP"
+          },
+          {
+            "id": 90002,
+            "title": "Lấy thông tin giảng viên có học vị Tiến sĩ",
+            "desc": "Lấy mã giảng viên và họ tên giảng viên có học vị là 'TS' hoặc 'Tieu Si'.",
+            "difficulty": "Trung bình",
+            "expectedQuery": "SELECT MAGV",
+            "hint": " HO"
+          }
+        ]
+      }
+    ],
+    "dbState": {
+      "DB": {
+        "NHANVIEN": {
+          "columns": [
+            "MANV",
+            "HOTEN",
+            "LUONG"
+          ],
+          "rows": [
+            [
+              1,
+              "Nguyễn Văn A",
+              15000000
+            ],
+            [
+              2,
+              "Trần Thị B",
+              12000000
+            ]
+          ]
+        },
+        "DUAN": {
+          "columns": [
+            "MADA",
+            "TENDUAN"
+          ],
+          "rows": [
+            [
+              101,
+              "Du an E-Learning"
+            ]
+          ]
+        }
+      },
+      "VIEWS": {
+        "V_THONGTINNHANVIEN": "SELECT \n    MANV,\n    HOTEN,\n    LUONG,\n    CASE \n        WHEN LUONG < 10000000 THEN N'Lương Thấp'\n        WHEN LUONG BETWEEN 10000000 AND 20000000 THEN N'Lương Trung Bình'\n        ELSE N'Lương Cao'\n    END AS PHAN_LOAI_LUONG\nFROM NHANVIEN"
+      },
+      "PROCEDURES": {
+        "SP_THEMNHANVIEN": {
+          "name": "sp_ThemNhanVien",
+          "params": [
+            "@MaNV",
+            "@HoTen",
+            "@Luong"
+          ],
+          "body": "IF @Luong < 0\n    BEGIN\n        PRINT N'Lỗi: Lương của nhân viên không được nhỏ hơn 0!';\n        RETURN;\n    END\n\n    \n    INSERT INTO NHANVIEN (MANV, HOTEN, LUONG)\n    VALUES (@MaNV, @HoTen, @Luong);\n    \n    PRINT N'Thêm nhân viên thành công!';"
+        }
+      },
+      "FUNCTIONS": {},
+      "TRIGGERS": {},
+      "SEQUENCES": {},
+      "CONSTRAINTS": {},
+      "INDEXES": {},
+      "DIAGRAMS": {
+        "QLDSV_HTC DIAGRAM": {
+          "name": "QLDSV_HTC Diagram",
+          "desc": "Sơ đồ liên kết dữ liệu quản lý điểm sinh viên học tín chỉ."
+        }
+      }
+    }
+  }
+]

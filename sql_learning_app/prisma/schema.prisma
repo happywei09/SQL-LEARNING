@@ -1,0 +1,77 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 Int                    @id @default(autoincrement())
+  username           String                 @unique
+  password           String
+  createdAt          DateTime               @default(now())
+  lessonProgress     UserLessonProgress[]
+  quizProgress       UserQuizProgress[]
+  exerciseProgress   UserExerciseProgress[]
+}
+
+model UserLessonProgress {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  lessonId Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readAt   DateTime @default(now())
+
+  @@unique([userId, lessonId])
+}
+
+model UserQuizProgress {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  chapterId Int
+  score     Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, chapterId])
+}
+
+model UserExerciseProgress {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  exerciseId  Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt DateTime @default(now())
+
+  @@unique([userId, exerciseId])
+}
+
+model Chapter {
+  id                  Int                  @id // Số thứ tự chương (ví dụ: 1, 2, 3...)
+  title               String
+  playgroundExercises PlaygroundExercise[]
+  quizQuestions       QuizQuestion[]
+}
+
+model PlaygroundExercise {
+  id            Int      @id @default(autoincrement())
+  title         String
+  desc          String
+  difficulty    String
+  expectedQuery String
+  hint          String
+  chapterId     Int
+  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model QuizQuestion {
+  id          Int      @id @default(autoincrement())
+  question    String
+  options     String[] // Lưu danh sách các phương án lựa chọn dưới dạng mảng text
+  answerIndex Int
+  explanation String
+  chapterId   Int
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
